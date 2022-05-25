@@ -1,0 +1,61 @@
+﻿@model IEnumerable<Medimall.Models.Billing>
+@if (Model.Any())
+{
+    <div class="oder-history">
+        @foreach (var item in Model)
+        {
+            <fieldset class="detailsorder">
+                @switch (@item.Status)
+                {
+                    case 1:<legend>Chờ xác nhận</legend> break;
+                    case 2:<legend>Đang giao</legend>break;
+                    case 3:<legend>Hoàn thành</legend>break;
+                    case 0:<legend>Đã hủy</legend>break;
+                }
+            <div class="listoder-header">
+                <div class="d-flex justify-content-between">
+                    <p>
+                        Mã đơn hàng:
+                        <span class="oderid"> #MMDH0@(item.BillId)</span>
+                    </p>
+                    @switch (@item.Status)
+                    {
+                        case 1:
+                        case 2:
+                        case 0:<p class="state2">Chưa hoàn thành</p> break;
+                        case 3:<p class="state">Hoàn thành</p>break;
+                    }
+                </div>
+                <p>
+                    Giá trị đơn:
+                    <span class="priceoder">@String.Format("{0:0,0}", item.Total) VND</span>
+                </p>
+                <p>
+                    Địa chỉ nhận hàng
+                    <span class="priceoder">@item.Address</span>
+                </p>
+            </div>
+                <div class="listoder-bot">
+                    <a href="@Url.Action("OderDetail","Account",new {id=item.BillId})" onclick="viewdetail()">
+                        Xem chi tiết
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                </div>
+            </fieldset>
+        }
+    </div>
+}
+else
+{
+    <div class="empty-result">
+        <img src="~/Vendor/img/icon/empty-image.png" alt="">
+        <p>Bạn chưa có đơn hàng nào rồi</p>
+    </div>
+}
+
+
+<script type="text/javascript">
+    function viewdatail() {
+        var oder=document.getElementsByClassName("")
+    }
+</script>

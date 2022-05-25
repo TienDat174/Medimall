@@ -1,0 +1,148 @@
+﻿@model IEnumerable<Medimall.Models.BillDetail>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+<link href="~/Vendor/css/admin-site.css" rel="stylesheet" />
+<h2 class="text-center">Quản lí thống kê</h2>
+    <div class="statistics-main">
+        <div class="container-fluid statistics-tab">
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-success shadow h-100 py-2 block-item">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                    Customer
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">@ViewBag.Account</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-user-check fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-info shadow h-100 py-2 block-item">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                    Admin
+                                </div>
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col-auto">
+                                        <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">@ViewBag.Admin</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-user-cog fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-warning shadow h-100 py-2 block-item">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                    Staff
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">@ViewBag.Staff</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-user-md fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="bottom-content">
+        <h2 class="text-center" >Thống Kê Doanh Thu</h2>
+        <div style="margin:auto;text-align:center">
+            <span>Từ ngày </span>&emsp;
+            <input type="date" id="txtstartday" value="" style="height:40px;">&emsp;
+            <span>Đến ngày</span>&emsp;
+            <input type="date" id="txtendday" value="" style="height:40px;">&emsp;
+            <input type="submit" id="search-btn" value="Tìm kiếm" style="padding: 10px; background-color: #4a69bd;color:white;border-radius:5px;border:none" />
+        </div>
+        <br />
+        <div id="table-statistics" style="display:none">
+            <table class="table table-striped">
+                <thead style="background-color: #4e73df; color: white">
+                    <tr>
+                        <th>
+                            STT
+                        </th>
+                        <th>
+                            Tên sản phẩm
+                        </th>
+                        <th>
+                            Số Lượng Bán
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id="tblStas">
+                </tbody>
+                <tbody id="tbltotal">
+                </tbody>
+            </table>
+        </div>
+    </div>
+<script>
+    $(document).ready(function () {
+        $("#search-btn").click(function () {
+        var Startday = $("#txtstartday").val();
+        var Endday = $("#txtendday").val();
+        var SetData = $("#tblStas");
+        var SetTotal = $("#tbltotal")
+            SetData.html("");
+            SetTotal.html("");
+            var valid=1
+        if (Startday == "" || Endday == "") {
+            var CheckDay = "Bạn phải nhập đầy đủ ngày tháng năm để thống kê";
+            alertify.error(CheckDay);
+            valid = 0;
+        }
+        if (Startday > Endday) {
+                var CheckDay = "Ngày kết thúc phải nhỏ hơn ngày hiện tại";
+            alertify.error(CheckDay);
+            valid = 0;
+        }
+            if (valid == 1) {
+                $("#table-statistics").show();
+                $.ajax({
+                    type: "post",
+                    url: "/AdminStatistics/GetSearchingData?Startday=" + Startday + "&Endday=" + Endday,
+                    contentType: "html",
+                    success: function (result) {
+                        var rowData = "";
+                        if (result.data.length == 0) {
+                            SetData.append('<tr style="color:red"><td colspan="5">Không tìm thấy</td></tr>')
+                        }
+                        for (var i = 0; i < result.data.length; i++) {
+                            rowData = '<tr><td>' + (i + 1) + '</td > ' +
+                                '<td>' + result.data[i].ProductName + '</td>' +
+                                '<td>' + result.data[i].Quantity + '</td>' +
+                                '</tr>';
+                            SetData.append(rowData);
+                        }
+                        var total = '<tr>' + '<td colspan="2" style="background-color:#4e73df; color: white"> Doanh Thu (đã bao gồm phí vận chuyển và Voucher)  </td>' +
+                            '<td>' + (Math.round(result.total * 100) / 100).toLocaleString() + ' VND' + '</td>' + '</tr>';
+                        SetTotal.append(total)
+                    }
+                })
+            }
+    })
+    })
+</script>
+

@@ -1,0 +1,44 @@
+﻿@model IEnumerable<Medimall.Models.Billing>
+
+@if (Model.Any())
+{
+    <div>
+        @foreach (var item in Model)
+        {
+            <fieldset class="detailsorder">
+                <legend>Đang giao</legend>
+                <div class="listoder-header">
+                    <div class="d-flex justify-content-between">
+                        <p>
+                            Mã đơn hàng:
+                            <span class="oderid">#MMDH0@(item.BillId)</span>
+                        </p>
+                        <p class="state2">Chưa hoàn thành</p>
+                    </div>
+
+                    <p>
+                        Giá trị đơn:
+                        <span class="priceoder">@String.Format("{0:0,0}", item.Total) VND</span>
+                    </p>
+                    <p>
+                        Địa chỉ nhận hàng
+                        <span class="priceoder">@item.Address</span>
+                    </p>
+                </div>
+                <div class="listoder-bot">
+                    <a href="@Url.Action("OderDetail","Account",new {id=item.BillId})">
+                        Xem chi tiết
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                </div>
+            </fieldset>
+        }
+    </div>
+}
+else
+{
+    <div class="empty-result">
+        <img src="~/Vendor/img/icon/empty-image.png" alt="">
+        <p>Bạn chưa có đơn hàng nào rồi</p>
+    </div>
+}

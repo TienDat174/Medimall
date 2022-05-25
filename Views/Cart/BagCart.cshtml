@@ -1,0 +1,45 @@
+﻿@model Medimall.Models.Cart
+@if (ViewBag.QuantityCart == null)
+{
+    <a href="#">
+        <div class="cart">
+            Giỏ hàng
+            <img src="~/Vendor/img/icon/shopping-cart.png" />
+        </div>
+    </a>
+}
+else if (ViewBag.QuantityCart == 0)
+{
+    <a href="@Url.Action("ShowCart","Cart")">
+        <div class="cart">
+            <div>
+                Giỏ hàng
+            </div>
+            <img src="~/Vendor/img/icon/shopping-cart.png" />
+        </div>
+    </a>
+}
+else
+{
+    <a href="@Url.Action("ShowCart","Cart")">
+        <div class="cart">
+            <div>
+                Giỏ hàng
+                @if (@TempData["DiscountPrice"] != null)
+                {
+                    <p>@String.Format("{0:0,0}", TempData["DiscountPrice"])đ</p>
+                }
+                else
+                {
+                    <p>@String.Format("{0:0,0}", ViewBag.TotalMoney)đ</p>
+                }
+
+            </div>
+            <p class="cart_soluong">@ViewBag.QuantityCart</p>
+            <img src="~/Vendor/img/icon/shopping-cart.png" />
+        </div>
+    </a>
+
+}
+
+
